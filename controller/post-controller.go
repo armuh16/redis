@@ -41,6 +41,16 @@ func (*controller) GetPosts(response http.ResponseWriter, request *http.Request)
 	json.NewEncoder(response).Encode(posts)
 }
 
+func (*controller) AddPost(response http.ResponseWriter, request *http.Request) {
+	response.Header().Set("Content-Type", "application/json")
+	var post entity.Post
+	err := json.NewDecoder(request.Body).Decode(&post)
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(response).Encode(errors.ServiceError{Message: "Error unmarshal data"})
+	}
+}
+
 func (*controller) GetPostsById(response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("Content-Type", "application/json")
 	postID := strings.Split(request.URL.Path, "/")[2]
