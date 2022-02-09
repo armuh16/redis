@@ -1,8 +1,10 @@
 package main
 
 import (
+	"orign/cache"
 	"os"
 
+	"gitlab.com/pragmaticreviews/golang-mux-api/cache"
 	"gitlab.com/pragmaticreviews/golang-mux-api/controller"
 	router "gitlab.com/pragmaticreviews/golang-mux-api/http"
 	"gitlab.com/pragmaticreviews/golang-mux-api/repository"
@@ -12,7 +14,8 @@ import (
 var (
 	postRepository repository.PostRepository = repository.NewSQLiteRepository()
 	postService    service.postService       = service.NewPostService(postRepository)
-	postController controller.postController = controller.NewPostController(postService)
+	postCache      cache.PostCache           = cache.NewRedisCache("localhost:6379", 1, 10)
+	postController controller.postController = controller.NewPostController(postService, postCache)
 	httpRouter     router.router             = router.NewMuxRouter()
 )
 
